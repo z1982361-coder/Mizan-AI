@@ -2,233 +2,475 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ميزان AI | Mizan AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ميزان AI | Mizan AI</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-        body {
-            margin: 0;
-            font-family: Tahoma, Arial, sans-serif;
-            background: #f4f7fc;
-            color: #17243d;
-            min-height: 100vh;
-        }
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 
-        header {
-            background: #142b4d;
-            color: white;
-            padding: 22px 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+<style>
+:root {
+    --navy:#0B1F3A;
+    --navy2:#16355F;
+    --turq:#2EC4B6;
+    --turq-soft:#DDF6F2;
+    --bg:#F3F8FA;
+    --border:#DCEBEE;
+    --text:#1c2b3f;
+}
 
-        .logo {
-            font-size: 25px;
-            font-weight: bold;
-        }
+* { box-sizing:border-box; }
 
-        .logo span {
-            color: #63d5c3;
-        }
+body {
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Cairo',Tahoma,sans-serif;
+    direction:rtl;
+}
 
-        header small {
-            color: #d3dfed;
-        }
+.container {
+    width:min(880px, calc(100% - 28px));
+    margin:25px auto;
+}
 
-        main {
-            max-width: 850px;
-            margin: 55px auto;
-            padding: 0 20px;
-        }
+.hero {
+    background:linear-gradient(135deg,var(--navy),var(--navy2) 70%,#1B6E7A);
+    border-radius:22px;
+    padding:30px 20px;
+    text-align:center;
+    box-shadow:0 10px 28px rgba(11,31,58,.25);
+    margin-bottom:14px;
+}
 
-        .intro {
-            text-align: center;
-            margin-bottom: 35px;
-        }
+.hero-icon { font-size:42px; }
 
-        .intro h1 {
-            font-size: 34px;
-            color: #142b4d;
-            margin-bottom: 12px;
-        }
+.hero h1 {
+    color:white;
+    font-size:42px;
+    font-weight:800;
+    margin:4px 0;
+}
 
-        .intro p {
-            color: #64748b;
-            line-height: 1.9;
-        }
+.hero p {
+    color:var(--turq);
+    font-size:19px;
+    font-weight:700;
+    margin:0;
+}
 
-        .panel {
-            background: white;
-            padding: 30px;
-            border-radius: 18px;
-            box-shadow: 0 8px 30px rgba(20,43,77,.08);
-        }
+.card {
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 4px 16px rgba(11,31,58,.06);
+}
 
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
+.intro p {
+    color:#22344d;
+    font-size:16px;
+    line-height:2;
+    margin:0;
+}
 
-        textarea {
-            width: 100%;
-            min-height: 170px;
-            padding: 16px;
-            border: 1px solid #dbe3ef;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 16px;
-            resize: vertical;
-            outline: none;
-        }
+label {
+    display:block;
+    color:var(--navy);
+    font-weight:700;
+    margin-bottom:12px;
+    font-size:17px;
+}
 
-        textarea:focus {
-            border-color: #269d9b;
-        }
+textarea {
+    width:100%;
+    min-height:165px;
+    resize:vertical;
+    padding:15px;
+    border:2px solid #CFE6E8;
+    border-radius:14px;
+    outline:none;
+    background:white;
+    color:var(--navy);
+    font-family:inherit;
+    font-size:16px;
+    line-height:1.9;
+    text-align:right;
+}
 
-        button {
-            width: 100%;
-            margin-top: 18px;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            background: #167e83;
-            color: white;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+textarea:focus { border-color:var(--turq); }
 
-        button:disabled {
-            opacity: .6;
-            cursor: wait;
-        }
+textarea::placeholder { color:#94A3B8; }
 
-        #status {
-            text-align: center;
-            margin-top: 15px;
-            color: #64748b;
-        }
+.actions {
+    display:grid;
+    grid-template-columns:3fr 1fr;
+    gap:10px;
+    margin-top:15px;
+}
 
-        #result {
-            display: none;
-            margin-top: 25px;
-            padding: 24px;
-            background: #f8fafc;
-            border-right: 4px solid #167e83;
-            border-radius: 12px;
-            line-height: 2;
-            white-space: pre-wrap;
-        }
+button {
+    font-family:inherit;
+    cursor:pointer;
+    transition:.2s;
+}
 
-        footer {
-            text-align: center;
-            padding: 25px;
-            color: #8290a5;
-            font-size: 13px;
-        }
+.analyze-btn {
+    border:0;
+    border-radius:14px;
+    padding:13px;
+    color:white;
+    font-size:18px;
+    font-weight:800;
+    background:linear-gradient(135deg,#2EC4B6,#1B9AAA);
+}
 
-        @media(max-width:600px) {
-            header {
-                padding: 18px 5%;
-            }
+.analyze-btn:hover { filter:brightness(1.06); }
 
-            .intro h1 {
-                font-size: 27px;
-            }
+.analyze-btn:disabled {
+    opacity:.65;
+    cursor:wait;
+}
 
-            .panel {
-                padding: 20px;
-            }
-        }
-    </style>
+.clear-btn {
+    background:white;
+    color:var(--navy);
+    border:2px solid #CFE6E8;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:700;
+}
+
+.examples-title {
+    color:var(--navy);
+    font-size:18px;
+    font-weight:800;
+    margin:0 0 15px;
+}
+
+.examples {
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+
+.example-btn {
+    width:100%;
+    padding:11px 14px;
+    background:white;
+    color:var(--navy);
+    border:1.5px solid #BFE9E4;
+    border-radius:14px;
+    text-align:right;
+    line-height:1.8;
+    font-size:14px;
+    font-weight:600;
+}
+
+.example-btn:hover {
+    background:var(--turq-soft);
+}
+
+.result-heading {
+    color:var(--navy);
+    font-size:23px;
+    font-weight:800;
+    margin:24px 4px 12px;
+}
+
+.result-card {
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    min-height:120px;
+    box-shadow:0 4px 16px rgba(11,31,58,.06);
+    direction:rtl;
+    text-align:right;
+    line-height:2;
+    overflow-wrap:anywhere;
+}
+
+.result-card h2 {
+    color:var(--navy);
+    background:var(--turq-soft);
+    border-right:6px solid var(--turq);
+    border-radius:10px;
+    padding:8px 14px;
+    font-size:19px;
+    margin:20px 0 10px;
+}
+
+.result-card h2:first-child { margin-top:0; }
+
+.result-card h3 { color:var(--navy); }
+
+.result-card p,.result-card li {
+    color:var(--text);
+    font-size:15px;
+    line-height:2;
+}
+
+.result-card blockquote {
+    border-right:4px solid var(--turq);
+    background:var(--bg);
+    margin:12px 0;
+    padding:10px 15px;
+    border-radius:8px;
+}
+
+.result-card hr {
+    border:0;
+    border-top:1px solid var(--border);
+    margin:20px 0;
+}
+
+.placeholder {
+    text-align:center;
+    color:#718096;
+    padding:18px 5px;
+}
+
+.placeholder strong {
+    display:block;
+    color:var(--navy);
+    font-size:19px;
+    margin-bottom:7px;
+}
+
+.loader {
+    width:40px;
+    height:40px;
+    border:5px solid var(--turq-soft);
+    border-top:5px solid var(--turq);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:8px auto 15px;
+}
+
+@keyframes spin {
+    to { transform:rotate(360deg); }
+}
+
+.status {
+    text-align:center;
+    color:#64748b;
+    font-size:14px;
+    margin-top:12px;
+}
+
+.note {
+    text-align:center;
+    color:#5b6b80;
+    font-size:13px;
+    padding:20px 8px;
+    line-height:1.9;
+}
+
+@media(max-width:600px) {
+    .container { margin:12px auto; }
+    .hero { padding:22px 12px; }
+    .hero h1 { font-size:33px; }
+    .hero p { font-size:15px; }
+    .card { padding:15px; }
+    .actions { grid-template-columns:2fr 1fr; }
+    .result-card { padding:15px; }
+    .result-card h2 { font-size:17px; }
+}
+</style>
 </head>
 
 <body>
 
-<header>
-    <div class="logo">ميزان <span>AI</span></div>
-    <small>الوعي الأخلاقي في قراراتنا اليومية</small>
-</header>
+<div class="container">
 
-<main>
-    <section class="intro">
-        <h1>كل موقف له ميزان</h1>
+    <header class="hero">
+        <div class="hero-icon">⚖️</div>
+        <h1>ميزان AI</h1>
+        <p>مساعدك الذكي للأخلاق الإسلامية</p>
+    </header>
+
+    <section class="card intro">
         <p>
-            اكتبي الموقف الذي تواجهينه، ودعي ميزان AI يساعدك
-            على فهمه وتحليله من منظور الأخلاق والقيم الإسلامية.
+            اكتب الموقف الذي تواجهه في عملك أو دراستك أو حياتك اليومية،
+            وسيقوم <strong>ميزان AI</strong> بتحليله، وبيان الخُلُق الإسلامي
+            المرتبط به، وتوضيح التصرف الصحيح، واقتراح حل عملي مناسب.
         </p>
     </section>
 
-    <section class="panel">
-        <label for="situation">اكتبي الموقف هنا</label>
+    <section class="card">
+        <label for="situation">📝 صف الموقف</label>
 
-        <textarea id="situation"
-            placeholder="مثال: طلب مني مديري أن أخبر الإدارة أن زميلي حضر للعمل رغم غيابه..."></textarea>
+        <textarea
+            id="situation"
+            maxlength="3000"
+            placeholder="مثال: طلب مني مديري أن أقول إن زميلي الغائب كان حاضرًا..."
+        ></textarea>
 
-        <button id="analyzeBtn" onclick="analyzeSituation()">
-            حلّل الموقف
-        </button>
+        <div class="actions">
+            <button class="analyze-btn" id="analyzeBtn" onclick="analyzeSituation()">
+                حلّل الموقف
+            </button>
 
-        <div id="status"></div>
-        <div id="result"></div>
+            <button class="clear-btn" onclick="clearAll()">
+                مسح
+            </button>
+        </div>
+
+        <div class="status" id="status"></div>
     </section>
-</main>
 
-<footer>
-    ميزان AI © 2026 — مساعد للتوجيه الأخلاقي
-</footer>
+    <section class="card">
+        <h3 class="examples-title">
+            💡 جرّب أحد هذه الأمثلة (اضغط على المثال)
+        </h3>
+
+        <div class="examples" id="examples"></div>
+    </section>
+
+    <h2 class="result-heading">📋 نتيجة التحليل</h2>
+
+    <section class="result-card" id="result">
+        <div class="placeholder">
+            <strong>✨ ستظهر نتيجة التحليل هنا</strong>
+            اكتب موقفك في المربع أعلاه ثم اضغط حلّل الموقف.
+        </div>
+    </section>
+
+    <footer class="note">
+        ⚖️ ميزان AI أداة مساعدة للتفكير الأخلاقي، وليست مصدرًا للفتوى الشرعية.
+        للمسائل الشرعية الدقيقة يُرجى الرجوع إلى جهة إفتاء معتمدة.
+    </footer>
+
+</div>
 
 <script>
-    async function analyzeSituation() {
-        const situation = document.getElementById("situation").value.trim();
-        const button = document.getElementById("analyzeBtn");
-        const status = document.getElementById("status");
-        const result = document.getElementById("result");
+const EXAMPLES = [
+    "طلب مني مديري أن أقول لمسؤول الموارد البشرية إن زميلي الغائب كان حاضرًا اليوم في العمل.",
+    "اكتشفت أن زميلًا ينسب إلى نفسه مشروعًا اشتغلتُ عليه أنا أمام المدير.",
+    "وعدتُ صديقي بمساعدته في موعد مهم، ثم ظهرت لي فرصة أخرى تتعارض مع الموعد، فهل أخلف وعدي؟",
+    "أرسل لي أحد العملاء مبلغًا زائدًا بالخطأ في الدفع ولم ينتبه لذلك، فماذا أفعل؟",
+    "زميلي يتحدث عن أسرار العمل وأخبار الآخرين أمام الجميع ويضحك، فكيف أتصرف معه؟",
+    "في الامتحان رأيت صديقي يغش، ثم طلب مني أن أسكت ولا أخبر أحدًا."
+];
 
-        if (!situation) {
-            status.textContent = "من فضلك اكتبي الموقف أولاً.";
-            result.style.display = "none";
-            return;
-        }
+const textarea = document.getElementById("situation");
+const result = document.getElementById("result");
+const statusBox = document.getElementById("status");
+const analyzeBtn = document.getElementById("analyzeBtn");
 
-        button.disabled = true;
-        button.textContent = "جاري تحليل الموقف...";
-        status.textContent = "ميزان AI يفكر في الموقف...";
-        result.style.display = "none";
+EXAMPLES.forEach(example => {
+    const button = document.createElement("button");
+    button.className = "example-btn";
+    button.textContent = example;
 
-        try {
-            const response = await fetch("/api", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ situation })
-            });
+    button.onclick = () => {
+        textarea.value = example;
+        textarea.focus();
+        statusBox.textContent = "";
+    };
 
-            const data = await response.json();
+    document.getElementById("examples").appendChild(button);
+});
 
-            if (!response.ok) {
-                throw new Error(data.error || "حدث خطأ أثناء التحليل.");
-            }
+function clearAll() {
+    textarea.value = "";
+    statusBox.textContent = "";
 
-            result.textContent = data.result;
-            result.style.display = "block";
-            status.textContent = "تم تحليل الموقف بنجاح.";
+    result.innerHTML = `
+        <div class="placeholder">
+            <strong>✨ ستظهر نتيجة التحليل هنا</strong>
+            اكتب موقفك في المربع أعلاه ثم اضغط حلّل الموقف.
+        </div>
+    `;
+}
 
-        } catch (error) {
-            status.textContent = error.message;
-        } finally {
-            button.disabled = false;
-            button.textContent = "حلّل الموقف";
-        }
+async function analyzeSituation() {
+    const situation = textarea.value.trim();
+
+    if (!situation) {
+        statusBox.textContent = "✍️ من فضلك اكتب وصف الموقف أولًا.";
+        return;
     }
+
+    if (situation.length < 15) {
+        statusBox.textContent = "✍️ الوصف قصير جدًا. اكتب الموقف بتفصيل أكبر.";
+        return;
+    }
+
+    if (situation.length > 3000) {
+        statusBox.textContent = "✂️ النص طويل جدًا. اختصر الموقف إلى أقل من 3000 حرف.";
+        return;
+    }
+
+    analyzeBtn.disabled = true;
+    analyzeBtn.textContent = "جارٍ تحليل الموقف...";
+
+    statusBox.textContent = "";
+
+    result.innerHTML = `
+        <div class="placeholder">
+            <div class="loader"></div>
+            <strong>⏳ جارٍ تحليل الموقف...</strong>
+            ميزان AI يزن الموقف بالقيم الإسلامية.
+        </div>
+    `;
+
+    try {
+        const response = await fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ situation })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "حدث خطأ أثناء التحليل.");
+        }
+
+        if (!data.result) {
+            throw new Error("لم يصل رد من Gemini.");
+        }
+
+        const html = marked.parse(data.result);
+
+        result.innerHTML = DOMPurify.sanitize(html);
+
+        statusBox.textContent = "تم تحليل الموقف بنجاح.";
+
+    } catch (error) {
+        result.innerHTML = `
+            <div class="placeholder">
+                <strong>⚠️ تعذّر إكمال التحليل</strong>
+                ${escapeHTML(error.message)}
+            </div>
+        `;
+
+        statusBox.textContent = "تحقّق من الاتصال وحاول مرة أخرى.";
+
+    } finally {
+        analyzeBtn.disabled = false;
+        analyzeBtn.textContent = "حلّل الموقف";
+    }
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[char]);
+}
 </script>
 
 </body>
