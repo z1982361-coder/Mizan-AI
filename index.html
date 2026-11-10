@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ميزان AI | Mizan AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f4f7fc;
+            color: #17243d;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #142b4d;
+            color: white;
+            padding: 22px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #63d5c3;
+        }
+
+        header small {
+            color: #d3dfed;
+        }
+
+        main {
+            max-width: 850px;
+            margin: 55px auto;
+            padding: 0 20px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .intro h1 {
+            font-size: 34px;
+            color: #142b4d;
+            margin-bottom: 12px;
+        }
+
+        .intro p {
+            color: #64748b;
+            line-height: 1.9;
+        }
+
+        .panel {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(20,43,77,.08);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 170px;
+            padding: 16px;
+            border: 1px solid #dbe3ef;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 16px;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #269d9b;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #167e83;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        #status {
+            text-align: center;
+            margin-top: 15px;
+            color: #64748b;
+        }
+
+        #result {
+            display: none;
+            margin-top: 25px;
+            padding: 24px;
+            background: #f8fafc;
+            border-right: 4px solid #167e83;
+            border-radius: 12px;
+            line-height: 2;
+            white-space: pre-wrap;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #8290a5;
+            font-size: 13px;
+        }
+
+        @media(max-width:600px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            .intro h1 {
+                font-size: 27px;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">ميزان <span>AI</span></div>
+    <small>الوعي الأخلاقي في قراراتنا اليومية</small>
+</header>
+
+<main>
+    <section class="intro">
+        <h1>كل موقف له ميزان</h1>
+        <p>
+            اكتبي الموقف الذي تواجهينه، ودعي ميزان AI يساعدك
+            على فهمه وتحليله من منظور الأخلاق والقيم الإسلامية.
+        </p>
+    </section>
+
+    <section class="panel">
+        <label for="situation">اكتبي الموقف هنا</label>
+
+        <textarea id="situation"
+            placeholder="مثال: طلب مني مديري أن أخبر الإدارة أن زميلي حضر للعمل رغم غيابه..."></textarea>
+
+        <button id="analyzeBtn" onclick="analyzeSituation()">
+            حلّل الموقف
+        </button>
+
+        <div id="status"></div>
+        <div id="result"></div>
+    </section>
+</main>
+
+<footer>
+    ميزان AI © 2026 — مساعد للتوجيه الأخلاقي
+</footer>
+
+<script>
+    async function analyzeSituation() {
+        const situation = document.getElementById("situation").value.trim();
+        const button = document.getElementById("analyzeBtn");
+        const status = document.getElementById("status");
+        const result = document.getElementById("result");
+
+        if (!situation) {
+            status.textContent = "من فضلك اكتبي الموقف أولاً.";
+            result.style.display = "none";
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "جاري تحليل الموقف...";
+        status.textContent = "ميزان AI يفكر في الموقف...";
+        result.style.display = "none";
+
+        try {
+            const response = await fetch("/api", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ situation })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "حدث خطأ أثناء التحليل.");
+            }
+
+            result.textContent = data.result;
+            result.style.display = "block";
+            status.textContent = "تم تحليل الموقف بنجاح.";
+
+        } catch (error) {
+            status.textContent = error.message;
+        } finally {
+            button.disabled = false;
+            button.textContent = "حلّل الموقف";
+        }
+    }
+</script>
+
+</body>
+</html>
